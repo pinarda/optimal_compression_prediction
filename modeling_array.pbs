@@ -1,0 +1,54 @@
+#!/bin/tcsh
+#PBS -N lcr_models
+#PBS -A NTDD0005
+#PBS -l select=1:ncpus=4:mpiprocs=1:ngpus=1:gpu_type=a100_40gb:mem=192GB
+#PBS -l walltime=12:00:00
+#PBS -q casper@casper-pbs
+#PBS -j oe
+
+if (! $?PBS_ARRAY_INDEX) then
+    echo "PBS_ARRAY_INDEX is not set"
+    exit 1
+endif
+
+if (! $?CONFIG_LIST) then
+    echo "CONFIG_LIST is not set"
+    exit 1
+endif
+
+if (! $?MODEL_RESULTS_DIR) then
+    echo "MODEL_RESULTS_DIR is not set"
+    exit 1
+endif
+
+if (! $?REPO_DIR) then
+    echo "REPO_DIR is not set"
+    exit 1
+endif
+
+set config_file = `sed -n "${PBS_ARRAY_INDEX}p" "$CONFIG_LIST"`
+if ("$config_file" == "") then
+    echo "No config found for array index $PBS_ARRAY_INDEX"
+    exit 1
+endif
+
+set config_name = `basename "$config_file"`
+switch ($config_name)
+    case multi_config_*:
+        set main_script = "newmain_derecho.py"
+        breaksw
+    default:
+        set main_script = "newmain.py"
+        breaksw
+endsw
+
+source /etc/csh.cshrc
+module load conda
+conda activate my-npl-2023a
+
+setenv HDF5_PLUGIN_PATH /glade/work/haiyingx/H5Z-ZFP-PLUGIN-unbiased/plugin
+cd "$REPO_DIR"
+
+echo "Array index $PBS_ARRAY_INDEX running $config_name with $main_script"
+echo "Results directory: $MODEL_RESULTS_DIR"
+python -u "$main_script" -c "$config_file"

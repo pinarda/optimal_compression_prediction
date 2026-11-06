@@ -1,0 +1,24 @@
+#!/bin/tcsh
+#PBS -N precompute_labels
+#PBS -A NTDD0005
+#PBS -l select=1:ncpus=1:mem=8GB
+#PBS -l walltime=00:30:00
+#PBS -q develop@desched1
+#PBS -j oe
+
+if (! $?REPO_DIR) then
+    echo "REPO_DIR is not set"
+    exit 1
+endif
+
+source /etc/csh.cshrc
+module load conda
+conda activate my-npl-2023a
+
+cd "$REPO_DIR"
+
+python -u precompute_labels.py \
+    --config-dir "$REPO_DIR/configs" \
+    --metrics-dir "$REPO_DIR/data/metrics" \
+    --output-dir "$REPO_DIR/data/precomputed_labels" \
+    --overwrite

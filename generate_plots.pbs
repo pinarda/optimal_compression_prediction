@@ -1,0 +1,21 @@
+#!/bin/bash -l
+#PBS -N optimal_compression_plots
+#PBS -A NTDD0005
+#PBS -l select=1:ncpus=4:mem=32GB
+#PBS -l walltime=04:00:00
+#PBS -q casper@casper-pbs
+#PBS -j oe
+
+set -eo pipefail
+
+module load conda
+conda activate my-npl-2023a
+set -u
+
+: "${REPO_DIR:?REPO_DIR was not supplied by the launcher}"
+: "${RUN_DIR:?RUN_DIR was not supplied by the launcher}"
+
+export HDF5_PLUGIN_PATH=/glade/work/haiyingx/H5Z-ZFP-PLUGIN-unbiased/plugin
+export MPLBACKEND=Agg
+
+"$REPO_DIR/generate_plots.sh" "$RUN_DIR"

@@ -1,0 +1,31 @@
+{
+    "Location": "./data/source_data_time2000",
+    "SaveDir": "./data/runs",
+    "VarList": [["TREFHTMX"]],
+    "FilenamePre": ["b.e11.B20TRC5CNBDRD.f09_g16.025.cam.h1."],
+    "FilenamePost": [".19200101-20051231.nc"],
+    "OrigPath": "./data/source_data_time2000",
+    "CompPath": "./data/source_data_time2000",
+    "SubDirs": ["lens1_ens25_1920"],
+    "CompDirs": ["zfp_p_8", "zfp_p_10", "zfp_p_12", "zfp_p_14", "zfp_p_16", "zfp_p_18", "zfp_p_20", "zfp_p_22", "zfp_p_24"],
+    "OptLdcpyDevPath": "",
+    "Times": [2000],
+    "Navg": 1,
+    "StorageLoc": "./data",
+    "Stride": 1,
+    "CutDataset": 0,
+    "Metric": ["dssim",
+               "pcc"],
+    "ModelType": "rf",
+    "RFFeatureList": [
+        "ns_con_var",
+        "ew_con_var",
+        "n_s_first_differences",
+        "w_e_first_differences",
+        "n_s_first_differences_max",
+        "w_e_first_differences_max",
+        "real_information_cutoff",
+        "entropy",
+        "magnitude_range"
+    ]
+}

@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Generated configuration files (recreate with create_configs*.sh).
+configs/*.json
+!configs/.gitkeep
+
+# Large inputs and generated outputs.
+data/features/*
+data/metrics/*
+data/precomputed_labels/*
+data/source_data_time2000/*
+data/runs/*
+data/latest_run.txt
+!data/features/.gitkeep
+!data/metrics/.gitkeep
+!data/precomputed_labels/.gitkeep
+!data/source_data_time2000/.gitkeep
+!data/runs/.gitkeep
+!data/README.md
+
+# PBS output and local logs.
+*.o[0-9]*
+*.e[0-9]*
+*.log
