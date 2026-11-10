@@ -9,13 +9,17 @@ Place the prepared features, metrics, source data, and precomputed labels under
 mkdir -p data
 ```
 
-## Run the modeling workflow
+## Run modeling locally without PBS
 
 ```bash
-./run_pipeline.sh
+./run_local.sh configs/rotated_config_1.json configs/rotated_config_48.json
 ```
 
-The path for the submitted run is written to `data/latest_run.txt`.
+Pass one or more config files. The example runs the paired CNN and RF
+single-variable configs directly with Python. To submit the complete workflow
+through PBS instead, run `./run_pipeline.sh`.
+
+The most recent local or PBS run path is written to `data/latest_run.txt`.
 
 ## Generate the plots after modeling finishes
 
