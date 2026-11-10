@@ -2,13 +2,11 @@
 
 set -euo pipefail
 
-if (( $# == 0 )); then
-    echo "Usage: $0 CONFIG [CONFIG ...]" >&2
-    exit 2
-fi
-
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$repo_dir"
+
+"$repo_dir/create_configs.sh"
+"$repo_dir/create_configs_single.sh"
 
 run_stamp="local_$(date +%Y-%m-%d_%H%M%S)"
 run_dir="$repo_dir/data/runs/$run_stamp"
@@ -17,17 +15,31 @@ logs_dir="$run_dir/logs"
 cache_dir="$repo_dir/data/precomputed_labels"
 mkdir -p "$results_dir" "$logs_dir" "$cache_dir"
 
-config_files=()
-for config in "$@"; do
-    if [[ "$config" != /* ]]; then
-        config="$repo_dir/$config"
-    fi
-    if [[ ! -f "$config" ]]; then
-        echo "Config does not exist: $config" >&2
-        exit 1
-    fi
-    config_files+=("$config")
-done
+if (( $# == 0 )); then
+    shopt -s nullglob
+    config_files=(
+        "$repo_dir"/configs/rotated_config_*.json
+        "$repo_dir"/configs/multi_config_*.json
+    )
+    shopt -u nullglob
+else
+    config_files=()
+    for config in "$@"; do
+        if [[ "$config" != /* ]]; then
+            config="$repo_dir/$config"
+        fi
+        if [[ ! -f "$config" ]]; then
+            echo "Config does not exist: $config" >&2
+            exit 1
+        fi
+        config_files+=("$config")
+    done
+fi
+
+if (( ${#config_files[@]} == 0 )); then
+    echo "No model configs were found" >&2
+    exit 1
+fi
 
 python -u "$repo_dir/precompute_labels.py" \
     --config-dir "$repo_dir/configs" \
@@ -65,6 +77,11 @@ model_results=$results_dir
 EOF
 printf '%s\n' "$run_dir" > "$repo_dir/data/latest_run.txt"
 
-echo "Local modeling finished"
+"$repo_dir/generate_plots.sh" "$run_dir" \
+    2>&1 | tee "$logs_dir/generate_plots.log"
+
+echo "Local workflow finished"
 echo "  Run directory: $run_dir"
-echo "  Generate plots: ./generate_plots.sh \"$run_dir\""
+echo "  Single-variable plots: $run_dir/plots_single"
+echo "  Multi-variable plots: $run_dir/plots_multi"
+echo "  Label tables: $run_dir/label_tables"

@@ -1,0 +1,22 @@
+name: optimal-compression-prediction
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - cartopy
+  - dask
+  - distributed
+  - h5netcdf
+  - h5py
+  - jq
+  - ldcpy=0.20
+  - matplotlib
+  - netcdf4
+  - numpy
+  - pandas
+  - scikit-learn
+  - seaborn
+  - xarray
+  - pip
+  - pip:
+      - tensorflow
